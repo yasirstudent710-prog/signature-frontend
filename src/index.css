@@ -1,0 +1,282 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------
+   Design tokens: Victorian detective palette + editorial typography
+   ------------------------------------------------------------------ */
+@theme {
+  --color-burgundy: #542b32;
+  --color-burgundy-dark: #3f1f25;
+  --color-mahogany: #38251f;
+  --color-parchment: #eae0cc;
+  --color-parchment-dark: #dccfb4;
+  --color-ivory: #f5f0e6;
+  --color-brass: #b08d57;
+  --color-brass-light: #d2b98a;
+  --color-brass-dark: #7a5d2f; /* brass tone with enough contrast for small text on ivory */
+  --color-forest: #45594a;
+  --color-ink: #292723;
+  --color-oxblood: #8a3030; /* restrained red for failed / unsuccessful states */
+
+  --font-display: "Playfair Display", "Cormorant Garamond", Georgia, serif;
+  --font-sans: "Inter", "Lato", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+}
+
+:root {
+  /* Very faint paper grain (SVG noise, tiled). Kept at ~7% so text stays crisp. */
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .22 0 0 0 0 .15 0 0 0 0 .12 0 0 0 .16 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Custom CSS lives in Tailwind's `base`/`components` layers so utility classes
+   (fixed, pl-9, pr-11, ...) can still override it. Unlayered CSS would beat them. */
+@layer base {
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  font-family: var(--font-sans);
+  color: var(--color-ink);
+  background-color: var(--color-parchment);
+  background-image: var(--grain), radial-gradient(ellipse at 50% 0%, rgb(245 240 230 / 0.7), transparent 65%);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  letter-spacing: -0.005em;
+}
+
+::selection {
+  background: var(--color-brass);
+  color: var(--color-mahogany);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-brass-dark);
+  outline-offset: 2px;
+}
+} /* end @layer base */
+
+@layer components {
+/* ------------------------------------------------------------------
+   Surfaces
+   ------------------------------------------------------------------ */
+.paper {
+  background-color: var(--color-ivory);
+  background-image: var(--grain);
+  border: 1px solid rgb(176 141 87 / 0.55);
+  border-radius: 6px;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.6),
+    0 1px 2px rgb(56 37 31 / 0.12),
+    0 14px 28px -18px rgb(56 37 31 / 0.45);
+}
+
+/* Layered sheets behind a card, like papers in a folder */
+.paper-stack {
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.6),
+    0 1px 2px rgb(56 37 31 / 0.12),
+    4px 4px 0 -1px var(--color-parchment-dark),
+    4px 4px 0 0 rgb(176 141 87 / 0.5);
+}
+
+/* Leather-like surface for navigation */
+.leather {
+  position: relative;
+  background-color: var(--color-mahogany);
+  background-image: var(--grain), linear-gradient(180deg, rgb(84 43 50 / 0.55), rgb(56 37 31 / 0) 55%);
+  box-shadow: inset -1px 0 0 rgb(176 141 87 / 0.55), 4px 0 18px -8px rgb(41 39 35 / 0.5);
+}
+.leather::after {
+  content: "";
+  position: absolute;
+  inset: 8px;
+  border: 1px dashed rgb(176 141 87 / 0.35);
+  border-radius: 3px;
+  pointer-events: none;
+}
+
+.label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-brass-dark);
+}
+
+.mono {
+  font-family: var(--font-mono);
+}
+
+/* Vintage rubber stamp */
+.stamp {
+  display: inline-block;
+  padding: 0.2rem 0.65rem;
+  border: 2px solid currentColor;
+  border-radius: 4px;
+  outline: 1px solid currentColor;
+  outline-offset: 2px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  transform: rotate(-4deg);
+  opacity: 0.9;
+}
+
+/* ------------------------------------------------------------------
+   Controls
+   ------------------------------------------------------------------ */
+.btn-brass {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1.5rem;
+  border: 1px solid var(--color-brass-dark);
+  border-radius: 4px;
+  background-image: linear-gradient(180deg, var(--color-brass-light), var(--color-brass));
+  color: var(--color-mahogany);
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.45), 0 1px 2px rgb(56 37 31 / 0.3);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+  cursor: pointer;
+}
+.btn-brass:hover:not(:disabled) {
+  transform: translateY(-1px);
+  filter: brightness(1.05);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.5), 0 6px 14px -6px rgb(56 37 31 / 0.55);
+}
+.btn-brass:active:not(:disabled) {
+  transform: translateY(0);
+}
+.btn-brass:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.55rem 1.1rem;
+  border: 1px solid rgb(176 141 87 / 0.8);
+  border-radius: 4px;
+  color: var(--color-burgundy);
+  font-size: 0.875rem;
+  font-weight: 500;
+  background: transparent;
+  transition: background-color 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+  cursor: pointer;
+}
+.btn-ghost:hover:not(:disabled) {
+  background-color: rgb(176 141 87 / 0.14);
+  border-color: var(--color-brass-dark);
+}
+.btn-ghost:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.input-field {
+  display: block;
+  width: 100%;
+  padding: 0.65rem 0.8rem;
+  border: 1px solid rgb(176 141 87 / 0.7);
+  border-radius: 4px;
+  background-color: rgb(255 255 255 / 0.55);
+  color: var(--color-ink);
+  font-size: 0.9375rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+.input-field::placeholder {
+  color: rgb(41 39 35 / 0.4);
+}
+.input-field:hover {
+  background-color: rgb(255 255 255 / 0.8);
+}
+.input-field:focus {
+  outline: none;
+  border-color: var(--color-burgundy);
+  background-color: #fff;
+  box-shadow: 0 0 0 3px rgb(176 141 87 / 0.35);
+}
+.input-field[aria-invalid="true"] {
+  border-color: var(--color-oxblood);
+}
+
+/* ------------------------------------------------------------------
+   Animation (all purely presentational; none drive or fake backend state)
+   ------------------------------------------------------------------ */
+@keyframes page-enter {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes settle {
+  from { opacity: 0; transform: scale(0.97); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes scan {
+  0%, 100% { top: 6%; }
+  50% { top: 88%; }
+}
+@keyframes lens-drift {
+  0%, 100% { transform: translate(0, 0) rotate(-8deg); }
+  25% { transform: translate(64px, 18px) rotate(4deg); }
+  50% { transform: translate(26px, 84px) rotate(-4deg); }
+  75% { transform: translate(-30px, 46px) rotate(6deg); }
+}
+@keyframes soft-pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+@keyframes lamp-flicker {
+  0%, 100% { opacity: 0.9; }
+  45% { opacity: 1; }
+  70% { opacity: 0.84; }
+}
+@keyframes stamp-in {
+  from { opacity: 0; transform: rotate(-4deg) scale(1.5); }
+  to { opacity: 0.9; transform: rotate(-4deg) scale(1); }
+}
+
+.page-enter { animation: page-enter 0.4s ease both; }
+.anim-settle { animation: settle 0.25s ease both; }
+.anim-scan { position: absolute; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--color-brass), transparent); box-shadow: 0 0 10px 2px rgb(176 141 87 / 0.5); animation: scan 3.2s ease-in-out infinite; }
+.anim-lens { animation: lens-drift 7s ease-in-out infinite; }
+.anim-pulse { animation: soft-pulse 1.8s ease-in-out infinite; }
+.anim-flicker { animation: lamp-flicker 5s ease-in-out infinite; }
+.anim-stamp { animation: stamp-in 0.45s cubic-bezier(0.2, 0.9, 0.3, 1.2) both; }
+} /* end @layer components */
+
+/* Respect reduced-motion: no movement, no transitions */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    animation-delay: 0s !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Printing the "Full Case Report" */
+@media print {
+  body { background: #fff; }
+  .no-print { display: none !important; }
+  .paper { box-shadow: none; border-color: #999; break-inside: avoid; }
+  .md\:pl-64 { padding-left: 0 !important; }
+}
